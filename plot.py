@@ -10,17 +10,23 @@ import matplotlib.pyplot as plt
 def read_data_from_file(file_path):
     with open(file_path, 'r') as file:
         data = file.read().splitlines()  # Lê o arquivo e divide em linhas
-        data = [float(i) for i in data if i]  # Converte cada linha para float
-    return data
+        data = [line.split() for line in data]  # Divide cada linha em uma lista de strings separadas por espaço
+        data = [[float(num) for num in line] for line in data]  # Converte cada string em float
+        data = [[line[0], line[1]] for line in data if line]  # Seleciona apenas as duas primeiras colunas
+        data1 = [line[0] for line in data]
+        data2 = [line[1] for line in data]
+    return data1, data2
 
 # Função para plotar o gráfico
-def plot_data(data):
-    plt.title('Tempo necessário para executar diferentes threads em paralelo controlando concorrência')
+def plot_data(data1, data2):
+    plt.title('Tempo necessário para executar diferentes threads em paralelo')
     plt.xlabel('Threads')
     plt.ylabel('Tempo')
-    plt.xticks(range(1, len(data)+1))  # Define os ticks do eixo x como números inteiros de 1 até o tamanho dos dados
-    plt.xlim(0, len(data)+1)  # Define os limites do eixo x de 1 até o tamanho dos dados
-    plt.plot(range(1, len(data)+1), data)  # Plota os dados
+    plt.xticks(range(1, len(data1)+1))  # Define os ticks do eixo x como números inteiros de 1 até o tamanho dos dados
+    plt.xlim(0, len(data1)+1)  # Define os limites do eixo x de 1 até o tamanho dos dados
+    plt.plot(range(1, len(data1)+1), data1, label="Sem controle")  # Plota os dados
+    plt.plot(range(1, len(data2)+1), data2, label="Com mutex")  # Plota os dados
+    plt.legend()  # Adiciona a legenda ao gráfico
     
     # Verifica se a pasta 'fig' existe. Se não, cria a pasta.
     if not os.path.exists('fig'):
@@ -36,10 +42,11 @@ def plot_data(data):
 file_path = 'data//times.txt'
 
 # Ler os dados do arquivo
-data = read_data_from_file(file_path)
+data1, data2 = read_data_from_file(file_path)
 
 # Plotar os dados
-plot_data(data)
+plot_data(data1, data2)
+# plot_data(data2, " controlando concorrência com o uso de mutex", 2)
 
 # Este script deve ser salvo como um arquivo .py e executado em um ambiente que tenha acesso
 # ao matplotlib e seja capaz de exibir gráficos. Certifique-se de que o arquivo 'data.txt' esteja

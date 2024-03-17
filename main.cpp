@@ -18,7 +18,7 @@ int iCountPrimes = 0;
 std::mutex mtx;
 int iMaxNum = 100000;
 
-void testThreads(int iNumThreads, double* temp);
+void testThreads(int iNumThreads, double* temp, bool bOptmized);
 void countPrimes(int iInitial, int iFinal, int iThreadNumber,
                      int iNumThreads, bool bOptmized);
 bool isPrime(int iNumber);
@@ -28,43 +28,48 @@ int main(){
 
     FILE* arqTime;
     arqTime = fopen("data//times.txt", "wt");
-    int repeats = 1;
-    int iThreads = 20;
+    int repeats = 50;
+    int iThreads = 10;
 
     for (int i=1; i<iThreads; i++){
-        double tempTime = 0;
+        double tempTime1 = 0;
+        double tempTime2 = 0;
         cout << "\nTestando com " << i << " threads" << endl;
         for (int r = 0; r<repeats; r++)
         {
             cout << "Repeticao " << r << endl;
             double t[2];
-            testThreads(i, t);
+            testThreads(i, &(t[0]), false);
+            testThreads(i, &(t[1]), true);
             iCountPrimes = 0;
             iPrimeNumbers.clear();
             // Tempo de execução
-            tempTime += t[0];
+            tempTime1 += t[0];
+            tempTime2 += t[1];
         }
         fprintf(arqTime, "%s", "\n");
-        fprintf(arqTime, "%f", tempTime/repeats);
+        fprintf(arqTime, "%f", tempTime1/repeats);
+        fprintf(arqTime, "%s", " ");
+        fprintf(arqTime, "%f", tempTime2/repeats);
     }
     fclose(arqTime);
 }
 
-void testThreads(int iNumThreads, double* temp)
+void testThreads(int iNumThreads, double* temp, bool bOptimized)
 {
     vector<thread> threads;
 
-    auto beginNotOptmize = high_resolution_clock::now();
+    auto beginTime = high_resolution_clock::now();
 
     for (int i = 0; i < iNumThreads; i++) {
-        threads.push_back(std::thread(countPrimes, 0, iMaxNum, i, iNumThreads, true));
+        threads.push_back(std::thread(countPrimes, 0, iMaxNum, i, iNumThreads, bOptimized));
     }
 
     for (auto& th : threads) th.join();
 
-    auto endNotOptmize = high_resolution_clock::now();
+    auto endTime = high_resolution_clock::now();
 
-    cout << "Tempo: " << duration_cast<microseconds>(endNotOptmize - beginNotOptmize).count() << " microssegundos" << endl;
+    cout << "Tempo: " << duration_cast<microseconds>(endTime - beginTime).count() << " microssegundos" << endl;
     cout << "Foram avaliados: " << iMaxNum << " numeros" << endl;
     cout << "Numero de Primos: " << iCountPrimes << endl;
     cout << "Primos Encontrados: ";
@@ -79,7 +84,7 @@ void testThreads(int iNumThreads, double* temp)
     }
     cout << endl;
     fclose(arqNumbers);
-    *temp = duration_cast<microseconds>(endNotOptmize - beginNotOptmize).count()* microseconds::period::num / static_cast<double>(microseconds::period::den);
+    *temp = duration_cast<microseconds>(endTime - beginTime).count()* microseconds::period::num / static_cast<double>(microseconds::period::den);
 
     return;
 }
