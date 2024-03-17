@@ -28,10 +28,10 @@ int main(){
 
     FILE* arqTime;
     arqTime = fopen("data//times.txt", "wt");
-    int repeats = 50;
+    int repeats = 20;
     int iThreads = 10;
 
-    for (int i=1; i<iThreads; i++){
+    for (int i=5; i<iThreads; i++){
         double tempTime1 = 0;
         double tempTime2 = 0;
         cout << "\nTestando com " << i << " threads" << endl;
@@ -40,7 +40,11 @@ int main(){
             cout << "Repeticao " << r << endl;
             double t[2];
             testThreads(i, &(t[0]), false);
+            cout << t[0] << endl;
+            iCountPrimes = 0;
+            iPrimeNumbers.clear();
             testThreads(i, &(t[1]), true);
+            cout << t[1] << endl;
             iCountPrimes = 0;
             iPrimeNumbers.clear();
             // Tempo de execução
@@ -73,7 +77,7 @@ void testThreads(int iNumThreads, double* temp, bool bOptimized)
     cout << "Foram avaliados: " << iMaxNum << " numeros" << endl;
     cout << "Numero de Primos: " << iCountPrimes << endl;
     cout << "Primos Encontrados: ";
-    // sort vector
+    /*
     std::sort(iPrimeNumbers.begin(), iPrimeNumbers.end());
     FILE* arqNumbers;
     arqNumbers = fopen("data//numbers.txt", "wt");
@@ -84,8 +88,9 @@ void testThreads(int iNumThreads, double* temp, bool bOptimized)
     }
     cout << endl;
     fclose(arqNumbers);
+    */
     *temp = duration_cast<microseconds>(endTime - beginTime).count()* microseconds::period::num / static_cast<double>(microseconds::period::den);
-
+    cout << duration_cast<microseconds>(endTime - beginTime).count()* microseconds::period::num / static_cast<double>(microseconds::period::den) << endl;
     return;
 }
 
