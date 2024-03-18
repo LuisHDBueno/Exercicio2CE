@@ -24,8 +24,8 @@ def plot_data(data1, data2):
     plt.ylabel('Tempo')
     plt.xticks(range(1, len(data1)+1))  # Define os ticks do eixo x como números inteiros de 1 até o tamanho dos dados
     plt.xlim(0, len(data1)+1)  # Define os limites do eixo x de 1 até o tamanho dos dados
-    plt.plot(range(1, len(data1)+1), data1, label="Não otimizado")  # Plota os dados
-    plt.plot(range(1, len(data2)+1), data2, label="Otimizado")  # Plota os dados
+    plt.plot(range(1, len(data1)+1), data1, label="Não balanceado")  # Plota os dados
+    plt.plot(range(1, len(data2)+1), data2, label="Balanceado")  # Plota os dados
     plt.legend()  # Adiciona a legenda ao gráfico
     
     # Verifica se a pasta 'fig' existe. Se não, cria a pasta.
