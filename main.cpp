@@ -16,7 +16,7 @@ using namespace std::chrono;
 vector<int> iPrimeNumbers;
 int iCountPrimes = 0;
 std::mutex mtx;
-int iMaxNum = 100000;
+int iMaxNum = 100000; // Numero maximo a ser avaliado
 
 void testThreads(int iNumThreads, double* temp, bool bOptmized);
 void countPrimes(int iInitial, int iFinal, int iThreadNumber,
@@ -28,8 +28,8 @@ int main(){
 
     FILE* arqTime;
     arqTime = fopen("data//times.txt", "wt");
-    int repeats = 20;
-    int iThreads = 10;
+    int repeats = 1; // Numero de repetições para cada teste
+    int iThreads = 10; // Numero máximo de threads
 
     for (int i=5; i<iThreads; i++){
         double tempTime1 = 0;
@@ -77,7 +77,7 @@ void testThreads(int iNumThreads, double* temp, bool bOptimized)
     cout << "Foram avaliados: " << iMaxNum << " numeros" << endl;
     cout << "Numero de Primos: " << iCountPrimes << endl;
     cout << "Primos Encontrados: ";
-    /*
+    
     std::sort(iPrimeNumbers.begin(), iPrimeNumbers.end());
     FILE* arqNumbers;
     arqNumbers = fopen("data//numbers.txt", "wt");
@@ -88,7 +88,7 @@ void testThreads(int iNumThreads, double* temp, bool bOptimized)
     }
     cout << endl;
     fclose(arqNumbers);
-    */
+    
     *temp = duration_cast<microseconds>(endTime - beginTime).count()* microseconds::period::num / static_cast<double>(microseconds::period::den);
     cout << duration_cast<microseconds>(endTime - beginTime).count()* microseconds::period::num / static_cast<double>(microseconds::period::den) << endl;
     return;
